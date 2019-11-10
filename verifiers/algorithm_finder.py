@@ -45,27 +45,27 @@ print(features_train.shape)
 num_folds = 10
 seed = 7
 scoring = 'accuracy'
-# scaler = StandardScaler().fit(X_train)
-# rescaledX = scaler.transform(X_train)
-pca = PCA(.75).fit(X_train)
-rescaledX = pca.transform(X_train)
+scaler = StandardScaler().fit(X_train)
+rescaledX = scaler.transform(X_train)
+pca = PCA(.75).fit(rescaledX)
+rescaledX = pca.transform(rescaledX)
 import pickle
-approximation = pca.inverse_transform(rescaledX)
-import matplotlib.pyplot as plt
-plt.figure(figsize=(8,4))
+# approximation = pca.inverse_transform(rescaledX)
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(8,4))
 
-# Original Image
-plt.subplot(1, 2, 1)
-plt.imshow(X_train[1].reshape(28,28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
-plt.xlabel('784 components', fontsize = 14)
-plt.title('Original Image', fontsize = 20)
+# # Original Image
+# plt.subplot(1, 2, 1)
+# plt.imshow(X_train[1].reshape(28,28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
+# plt.xlabel('784 components', fontsize = 14)
+# plt.title('Original Image', fontsize = 20)
 
-# 154 principal components
-plt.subplot(1, 2, 2)
-plt.imshow(approximation[1].reshape(28, 28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
-plt.xlabel('154 components', fontsize = 14)
-plt.title('95% of Explained Variance', fontsize = 20)
-plt.show()
+# # 154 principal components
+# plt.subplot(1, 2, 2)
+# plt.imshow(approximation[1].reshape(28, 28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
+# plt.xlabel('154 components', fontsize = 14)
+# plt.title('95% of Explained Variance', fontsize = 20)
+# plt.show()
 
 t = time.time()
 model = KNeighborsClassifier(n_neighbors = 5)
