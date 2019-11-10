@@ -30,7 +30,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 features_train = read_csv('./../../../datasets/kannada_letters/train.csv')
-features_validation = read_csv('./../../../datasets/kannada_letters/train.csv')
 
 # print(features_train.shape,features_validation.shape)
 # print(features_train.head(20))
@@ -40,45 +39,32 @@ features_train = features_train.values
 Y_train = features_train[:,0].astype(float)
 X_train = features_train[:,1:785].astype(float)
 print(features_train.shape)
-
+import pickle
 
 num_folds = 10
 seed = 7
 scoring = 'accuracy'
 scaler = StandardScaler().fit(X_train)
+pickle.dump(scaler,open("./../final_model_pkl_files/scaler.pkl","wb"))
 rescaledX = scaler.transform(X_train)
 pca = PCA(.75).fit(rescaledX)
+
+pickle.dump(pca,open("./../final_model_pkl_files/pca.pkl","wb"))
 rescaledX = pca.transform(rescaledX)
-import pickle
-# approximation = pca.inverse_transform(rescaledX)
-# import matplotlib.pyplot as plt
-# plt.figure(figsize=(8,4))
 
-# # Original Image
-# plt.subplot(1, 2, 1)
-# plt.imshow(X_train[1].reshape(28,28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
-# plt.xlabel('784 components', fontsize = 14)
-# plt.title('Original Image', fontsize = 20)
 
-# # 154 principal components
-# plt.subplot(1, 2, 2)
-# plt.imshow(approximation[1].reshape(28, 28),cmap = plt.cm.gray, interpolation='nearest',clim=(0, 255))
-# plt.xlabel('154 components', fontsize = 14)
-# plt.title('95% of Explained Variance', fontsize = 20)
-# plt.show()
-
-t = time.time()
-model = KNeighborsClassifier(n_neighbors = 5)
-model.fit(X_train,Y_train)
-print(time.time()-t)
-import pickle
-
-pickle.dump(model,open("./../final_model_pkl_files/knn_kannada_digits.pkl","wb"))
 # t = time.time()
-# model = LogisticRegression(C = 1)
-# model.fit(X_train,Y_train)
+# model = KNeighborsClassifier(n_neighbors = 5)
+# model.fit(rescaledX,Y_train)
 # print(time.time()-t)
-# pickle.dump(model,open("./../final_model_pkl_files/lr_kannada_digits.pkl","wb"))
+
+
+# pickle.dump(model,open("./../final_model_pkl_files/knn_kannada_digits_new.pkl","wb"))
+t = time.time()
+model = LogisticRegression(C = 1)
+model.fit(rescaledX,Y_train)
+print(time.time()-t)
+pickle.dump(model,open("./../final_model_pkl_files/lr_kannada_digits.pkl","wb"))
 
 # t = time.time()
 # model = GradientBoostingClassifier(max_depth = 5,min_samples_split = 400)
